@@ -6,6 +6,13 @@ import android.view.WindowManager;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
 
 public class BarChartActivity extends AppCompatActivity {
 
@@ -44,7 +51,36 @@ public class BarChartActivity extends AppCompatActivity {
 
         mChart.getAxisLeft().setDrawGridLines(false);
 
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
 
+        for (int i = 0; i < 11; i++) {
+            float mult = 11;
+            float val = (float) (Math.random() * mult) + mult / 3;
+            yVals1.add(new BarEntry(i, val));
+        }
+
+        BarDataSet set1;
+
+        if (mChart.getData() != null &&
+                mChart.getData().getDataSetCount() > 0) {
+            set1 = (BarDataSet)mChart.getData().getDataSetByIndex(0);
+            set1.setValues(yVals1);
+            mChart.getData().notifyDataChanged();
+            mChart.notifyDataSetChanged();
+        } else {
+            set1 = new BarDataSet(yVals1, "Data Set");
+            set1.setColors(ColorTemplate.VORDIPLOM_COLORS);
+            set1.setDrawValues(false);
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+
+            BarData data = new BarData(dataSets);
+            mChart.setData(data);
+            mChart.setFitBars(true);
+        }
+
+        mChart.invalidate();
         // add a nice and smooth animation
         mChart.animateY(2500);
 
